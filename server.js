@@ -5,16 +5,13 @@ var exphbs = require("express-handlebars");
 var axios = require("axios");
 var cheerio = require("cheerio");
 var path = require('path');
-
-var Comment = require("../models/Article.js");
-var Note = require("../models/Note.js");
-
-
 var express = require("express");
 var app = express();
 
 var db = require("./models");
 
+var Article = require("./models/Article.js");
+var Note = require("./models/Note.js");
 
 var PORT = 3000;
 
@@ -35,16 +32,21 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 
-
 // // Connect to the Mongo DB
  mongoose.connect("mongodb://localhost/test", { useNewUrlParser: true });
- 
+
+ //connecting to MongoDB
+//mongoose.connect("mongodb://localhost/scraped_news");
+const MONGODB_URI =
+process.env.MONGODB_URI || "mongodb://localhost/scraper_news";
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log(" connected!");
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", function() {
+console.log("Connected to Mongoose!");
 });
+ 
 
 // // Routes
 
@@ -52,9 +54,6 @@ app.get("/", function(req, res){
   res.redirect("/article");
 });
 
-// app.get("/", function(req, res){
-//   res.redirect("/articles");
-// });
 
 
 // A GET route for scraping the echoJS website
@@ -76,7 +75,7 @@ app.get("/scrape", function(req, res) {
       result.link = $(this)
         .children("a")
         .attr("href");
-
+      
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then(function(dbArticle) {
@@ -95,7 +94,7 @@ app.get("/scrape", function(req, res) {
 });
 
 // Route for getting all Articles from the db
-app.get("/article", function(req, res) {
+app.get("/articles", function(req, res) 
   // Grab every document in the Articles collection
   db.Article.find({})
     .then(function(dbArticle) {
@@ -106,14 +105,13 @@ app.get("/article", function(req, res) {
       // If an error occurred, send it to the client
       res.json(err);
     });
-});
 
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/article/:id", function(req, res) {
   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
   db.Article.findOne({ _id: req.params.id })
     // ..and populate all of the notes associated with it
-    .populate("note")
+    .populate("Comment")
     .then(function(dbArticle) {
       // If we were able to successfully find an Article with the given id, send it back to the client
       res.json(dbArticle);
@@ -143,8 +141,6 @@ app.post("/article/:id", function(req, res) {
       res.json(err);
     });
 });
-
-
 
 
 
