@@ -41,11 +41,12 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 // // Routes
 
-router.get("/", function(req, res) {
-  res.redirect("/articles");
-});
+// app.get("/", function(req, res) {
+//   res.redirect("/article");
+// });
 
 
+// sorte by time
 // Route for getting all Articles from the db
 app.get("/", function(req, res){
   db.Article.find({})
@@ -80,7 +81,6 @@ app.get("/scrape", function(req, res) {
       result.link = $(this)
         .children("a")
         .attr("href");
-
       
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
@@ -93,9 +93,7 @@ app.get("/scrape", function(req, res) {
           console.log(err);
         });
     });
-
-    // Send a message to the client
-    res.send("Scrape Complete");
+     res.redirect("/");
   });
 });
 

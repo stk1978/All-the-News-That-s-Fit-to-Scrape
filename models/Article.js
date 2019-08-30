@@ -9,8 +9,12 @@ var ArticleSchema = new Schema({
   // `title` is required and of type String
   title: {
     type: String,
-    required: true
+    required: true,
+    unique:true
   },
+
+ time : { type : Date, default: Date.now },
+
   // `link` is required and of type String
   link: {
     type: String,
