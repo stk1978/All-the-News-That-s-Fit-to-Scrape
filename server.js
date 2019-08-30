@@ -111,6 +111,49 @@ app.get("/articles", function(req, res) {
     });
   });
 
+app.get("/articles-json", function(req, res) {
+  Article.find({}, function(err, doc) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(doc);
+    }
+  });
+});
+
+
+app.get("/readArticle/:id", function(req, res) {
+  var articleId = req.params.id;
+  var hbsObj = {
+    article: [],
+    body: []
+  };
+
+  Article.findOne({ _id: articleId })
+    .populate("comment")
+    .exec(function(err, doc) {
+      if (err) {
+        console.log("Error: " + err);
+      } else {
+        hbsObj.article = doc;
+        var link = doc.link;
+        request(link, function(error, response, html) {
+          var $ = cheerio.load(html);
+
+          $(".l-col__main").each(function(i, element) {
+            hbsObj.body = $(this)
+              .children(".c-entry-content")
+              .children("p")
+              .text();
+
+            res.render("article", hbsObj);
+            return false;
+          });
+        });
+      }
+    });
+});
+
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/article/:id", function(req, res) {
   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
