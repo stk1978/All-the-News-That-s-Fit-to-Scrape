@@ -31,9 +31,9 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://steliosk9:9t287eD9Jfnbd@A@ds045475.mlab.com:45475/heroku_ljvwnvbf";
-   mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+// Connect to the Mongo DB
+mongoose.connect('mongodb://localhost:27017/myapp', {useNewUrlParser: true});
+
 
 
 // // Routes
@@ -122,7 +122,7 @@ app.get("/readArticle/:id", function(req, res) {
   };
 
   Article.findOne({ _id: articleId })
-    .populate("comment")
+    .populate("note")
     .exec(function(err, doc) {
       if (err) {
         console.log("Error: " + err);
@@ -151,7 +151,7 @@ app.get("/article/:id", function(req, res) {
   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
   db.Article.findOne({ _id: req.params.id })
     // ..and populate all of the notes associated with it
-    .populate("Comment")
+    .populate("note")
     .then(function(dbArticle) {
       // If we were able to successfully find an Article with the given id, send it back to the client
       res.json(dbArticle);
