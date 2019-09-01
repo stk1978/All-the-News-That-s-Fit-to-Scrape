@@ -31,36 +31,12 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 
-
 const MONGODB_URI =
-process.env.MONGODB_URI || "mongodb://localhost/scraper_news";
-
-// Connect to Mongoose
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+  process.env.MONGODB_URI || "mongodb://steliosk9:9t287eD9Jfnbd@A@ds045475.mlab.com:45475/heroku_ljvwnvbf";
+   mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 
 // // Routes
-
-// app.get("/", function(req, res) {
-//   res.redirect("/article");
-// });
-
-
-// sorte by time
-// Route for getting all Articles from the db
-app.get("/", function(req, res){
-  db.Article.find({})
-  .then(function(dbArticle) {
-    // If we were able to successfully find Articles, send them back to the client
-    res.render("partials/note.handlebars", {article: dbArticle});
-  })
-  .catch(function(err) {
-    // If an error occurred, send it to the client
-    res.json(err);
-  });
-});
-
-
 
 // A GET route for scraping ABlogToWatchWebsite website
 app.get("/scrape", function(req, res) {
@@ -96,6 +72,22 @@ app.get("/scrape", function(req, res) {
      res.redirect("/");
   });
 });
+
+
+// Route for getting all Articles from the db
+app.get("/", function(req, res){
+  db.Article.find({})
+  .then(function(dbArticle) {
+    // If we were able to successfully find Articles, send them back to the client
+    res.render("partials/note.handlebars", {article: dbArticle});
+  })
+  .catch(function(err) {
+    // If an error occurred, send it to the client
+    res.json(err);
+  });
+});
+
+
 
 // Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
