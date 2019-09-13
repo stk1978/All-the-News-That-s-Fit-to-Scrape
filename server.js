@@ -32,8 +32,14 @@ app.set("view engine", "handlebars");
 
 
 // Connect to the Mongo DB
-mongoose.connect('mongodb://localhost:27017/myapp', {useNewUrlParser: true});
 
+mongoose.connect(
+process.env.MONGODB_URI || 
+"mongodb://steliosk9:123456Kk9@ds045475.mlab.com:45475/heroku_ljvwnvbf",
+{
+ {useMongoClient: true});
+}
+);
 
 
 // // Routes
