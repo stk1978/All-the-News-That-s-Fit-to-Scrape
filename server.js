@@ -12,7 +12,7 @@ var db = require("./models");
 var Article = require("./models/Article.js");
 var Note = require("./models/Note.js");
 
-var PORT = 5000;
+var PORT = 8080;
 
 // Configure middleware
 
