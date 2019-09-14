@@ -33,13 +33,11 @@ app.set("view engine", "handlebars");
 
 // Connect to the Mongo DB
 
-mongoose.connect(
-process.env.MONGODB_URI || 
-"mongodb://steliosk9:123456Kk9@ds045475.mlab.com:45475/heroku_ljvwnvbf",
-{
- {useMongoClient: true});
-}
-);
+// mongoose.connect(process.env.MONGODB_URI || "mongodb://steliosk9:123456Kk9@ds045475.mlab.com:45475/heroku_ljvwnvbf", {{useMongoClient: true});}
+// );
+
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://steliosk9:123456Kk9@ds045475.mlab.com:45475/heroku_ljvwnvbf"
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 
 // // Routes
